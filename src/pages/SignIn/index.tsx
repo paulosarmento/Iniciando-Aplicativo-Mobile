@@ -2,6 +2,9 @@ import React from 'react';
 import { Image } from 'react-native';
 import logoImg from '../../assets/logo.png';
 
+import Input from '../../components/Input';
+import Button from '../../components/Button';
+
 import { Container, Title } from './styles';
 
 const SignIn: React.FC = () => {
@@ -9,6 +12,15 @@ const SignIn: React.FC = () => {
     <Container>
       <Image source={logoImg} />
       <Title>Faça seu logon</Title>
+      <Input name="email" icon="mail" placeholder="email" />
+      <Input name="password" icon="lock" placeholder="senha" />
+      <Button
+        onPress={() => {
+          console.log('Deu');
+        }}
+      >
+        Entrar
+      </Button>
     </Container>
   );
 };

@@ -8,9 +8,16 @@ import React, {
 import AsyncStorage from '@react-native-community/async-storage';
 import api from '../services/api';
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar_url: string;
+}
+
 interface AuthState {
   token: string;
-  user: object;
+  user: User;
 }
 interface SignInCredentials {
   email: string;
@@ -18,18 +25,16 @@ interface SignInCredentials {
 }
 
 interface AuthContextData {
-  user: object;
+  user: User;
+  loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
-  loading: boolean;
 }
 
-export const AuthContext = createContext<AuthContextData>(
-  {} as AuthContextData,
-);
+const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [data, setData] = useState<AuthState>();
+  const [data, setData] = useState<AuthState>({} as AuthState);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -70,9 +75,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     setData({} as AuthState);
   }, []);
   return (
-    <AuthContext.Provider
-      value={{ user: data?.user, signIn, signOut, loading }}
-    >
+    <AuthContext.Provider value={{ user: data.user, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
@@ -82,9 +85,7 @@ export function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error('useAuth must be used widthin an AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }
-
-export default { AuthProvider, useAuth };

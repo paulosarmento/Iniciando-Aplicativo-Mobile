@@ -1,6 +1,7 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
+import { Platform } from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuth } from '../../hooks/auth';
@@ -32,16 +33,18 @@ export interface Provider {
 }
 
 const CreateAppointment: React.FC = () => {
-
   const { user } = useAuth();
   const route = useRoute();
   const { goBack } = useNavigation();
 
-  const routeParams  = route.params as RouteParams;
+  const routeParams = route.params as RouteParams;
 
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [providers, setProviders] = useState<Provider[]>([]);
-  const [selectedProvider, setSelectedProvider] = useState(routeParams.providerId);
+  const [selectedProvider, setSelectedProvider] = useState(
+    routeParams.providerId,
+  );
 
   useEffect(() => {
     api.get('providers').then(response => {
@@ -49,18 +52,32 @@ const CreateAppointment: React.FC = () => {
     });
   }, []);
 
-
   const navigateBack = useCallback(() => {
-    goBack()
-  },[goBack]);
+    goBack();
+  }, [goBack]);
 
   const handleSelectProvider = useCallback((providerId: string) => {
     setSelectedProvider(providerId);
-  },[]);
+  }, []);
 
-  const handleOpenDatePicker = useCallback(()=> {
-    setShowDatePicker(true);
-  },[]);
+  const handleToggleDatePiker = useCallback(() => {
+    setShowDatePicker(state => !state);
+  }, []);
+
+  const handleDateChanged = useCallback(
+    (event: any, date: Date | undefined) => {
+      if (Platform.OS === 'android') {
+        setShowDatePicker(false);
+      }
+
+      // date
+
+      if (date) {
+        setSelectedDate(date);
+      }
+    },
+    [],
+  );
 
   return (
     <Container>
@@ -74,34 +91,39 @@ const CreateAppointment: React.FC = () => {
         <UserAvatar source={{ uri: user.avatar_url }} />
       </Header>
       <ProvidersListContainer>
-
         <ProvidersList
           horizontal
           showsHorizontalScrollIndicator={false}
           data={providers}
-          keyExtractor={ (provider) => provider.id }
+          keyExtractor={provider => provider.id}
           renderItem={({ item: provider }) => (
             <ProviderContainer
               onPress={() => handleSelectProvider(provider.id)}
               selected={provider.id === selectedProvider}
-
             >
               <ProviderAvatar source={{ uri: provider.avatar_url }} />
-              <ProviderName selected={provider.id === selectedProvider}>{provider.name}</ProviderName>
-
+              <ProviderName selected={provider.id === selectedProvider}>
+                {provider.name}
+              </ProviderName>
             </ProviderContainer>
           )}
         />
-
       </ProvidersListContainer>
       <Calendar>
         <Title>Escolha a data</Title>
-        <OpenDatePickerButton onPress={ handleOpenDatePicker }>
-            <OpenDatePickerButtonText>Selecionar outra data</OpenDatePickerButtonText>
+        <OpenDatePickerButton onPress={handleToggleDatePiker}>
+          <OpenDatePickerButtonText>
+            Selecionar outra data
+          </OpenDatePickerButtonText>
         </OpenDatePickerButton>
-        {showDatePicker && ( <DateTimePicker mode="date" textColor="#f4ede8" value={new Date()} /> )}
-
-
+        {showDatePicker && (
+          <DateTimePicker
+            mode="date"
+            onChange={handleDateChanged}
+            textColor="#f4ede8"
+            value={selectedDate}
+          />
+        )}
       </Calendar>
     </Container>
   );

@@ -35,7 +35,7 @@
     "react/jsx-one-expression-per-line": "off",
     "@typescript-eslint/ban-types": "off",
     "import/no-duplicates": "off",
-    "@typescript-eslint/camelcase": "off",
+    "camelcase": "off",
     "no-shadow": "off",
     "import/extensions": [
       "error",

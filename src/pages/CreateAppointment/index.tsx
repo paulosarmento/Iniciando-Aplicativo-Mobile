@@ -123,7 +123,7 @@ const CreateAppointment: React.FC = () => {
         provider_id: selectedProvider,
         date,
       });
-
+      date.setHours(selectedHour);
       navigate('AppointmentCreated', { date: date.getTime() });
     } catch (err) {
       Alert.alert(

@@ -21,7 +21,6 @@ import {
   ProviderName,
   ProviderMeta,
   ProviderMetaText,
-
 } from './styles';
 
 export interface Provider {
@@ -33,7 +32,7 @@ export interface Provider {
 const Dashboard: React.FC = () => {
   const [providers, setProviders] = useState<Provider[]>([]);
 
-  const { signOut, user } = useAuth();
+  const { user } = useAuth();
   const { navigate } = useNavigation();
 
   useEffect(() => {
@@ -43,13 +42,16 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const navigateToProfile = useCallback(() => {
-    // navigate('Profile');
-    signOut();
-  }, [signOut]);
-
-  const navigateToCreateAppointment = useCallback((providerId: string) => {
-    navigate('CreateAppointment', { providerId });
+    navigate('Profile');
+    // signOut();
   }, [navigate]);
+
+  const navigateToCreateAppointment = useCallback(
+    (providerId: string) => {
+      navigate('CreateAppointment', { providerId });
+    },
+    [navigate],
+  );
 
   return (
     <Container>
@@ -64,13 +66,15 @@ const Dashboard: React.FC = () => {
       </Header>
       <ProvidersList
         data={providers}
-        keyExtractor={(provider) => provider.id}
+        keyExtractor={provider => provider.id}
         ListHeaderComponent={
           <ProvidersListTitle>Cabeleireiros</ProvidersListTitle>
         }
         renderItem={({ item: provider }) => (
-          <ProviderContainer onPress= {() => navigateToCreateAppointment(provider.id)}>
-            <ProviderAvatar source={{ uri: provider.avatar_url}} />
+          <ProviderContainer
+            onPress={() => navigateToCreateAppointment(provider.id)}
+          >
+            <ProviderAvatar source={{ uri: provider.avatar_url }} />
             <ProviderInfo>
               <ProviderName>{provider.name}</ProviderName>
 

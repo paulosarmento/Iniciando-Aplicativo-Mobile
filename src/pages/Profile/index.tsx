@@ -25,7 +25,9 @@ import Button from '../../components/Button';
 import {
   Container,
   Title,
+  ContainerButton,
   BackButton,
+  LogoutButton,
   UserAvatar,
   UserAvatarButton,
 } from './styles';
@@ -40,7 +42,7 @@ interface ProfileFormData {
 }
 
 const SignUp: React.FC = () => {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, signOut } = useAuth();
 
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
@@ -121,6 +123,10 @@ const SignUp: React.FC = () => {
     [navigation, updateUser],
   );
 
+  const handleLogout = useCallback(() => {
+    signOut();
+  }, [signOut]);
+
   const handleUpdateAvatar = useCallback(() => {
     ImagePicker.showImagePicker(
       {
@@ -168,9 +174,14 @@ const SignUp: React.FC = () => {
           contentContainerStyle={{ flexGrow: 1 }}
         >
           <Container>
-            <BackButton onPress={handleGoBack}>
-              <Icon name="chevron-left" size={24} color="#999591" />
-            </BackButton>
+            <ContainerButton>
+              <BackButton onPress={handleGoBack}>
+                <Icon name="chevron-left" size={24} color="#999591" />
+              </BackButton>
+              <LogoutButton onPress={handleLogout}>
+                <Icon name="log-out" size={24} color="#999591" />
+              </LogoutButton>
+            </ContainerButton>
             <UserAvatarButton onPress={handleUpdateAvatar}>
               <UserAvatar source={{ uri: user.avatar_url }} />
             </UserAvatarButton>

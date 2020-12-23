@@ -14,8 +14,19 @@ export const Title = styled.Text`
   margin: 24px 0;
 `;
 
+export const ContainerButton = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
 export const BackButton = styled.TouchableOpacity`
   margin-top: 40px;
+`;
+
+export const LogoutButton = styled.TouchableOpacity`
+  margin-top: 40px;
+  justify-content: flex-end;
 `;
 
 export const UserAvatarButton = styled.TouchableOpacity`

@@ -135,12 +135,12 @@ const SignUp: React.FC = () => {
         takePhotoButtonTitle: 'Usar câmera',
         chooseFromLibraryButtonTitle: 'Escolher da galeria',
       },
-      response => {
+      (response: { didCancel: any; errorCode: any; uri: any }) => {
         if (response.didCancel) {
           return;
         }
 
-        if (response.error) {
+        if (response.errorCode) {
           Alert.alert('Erro ao atualizar seu avatar');
         }
 
